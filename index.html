@@ -344,33 +344,33 @@
     <!-- UPLOAD PASSPORT SIZE PHOTO -->
     <div class="field">
       <label>Upload Passport Size Photo <span class="req">*</span></label>
-      <div class="file-upload-box" onclick="document.getElementById('passportPhoto').click()">
+      <div class="file-upload-box" id="passportBox" onclick="document.getElementById('passportPhoto').click()">
         <span id="passportLabel">Choose File</span>
         <div class="file-upload-icons"><span>⬆️</span><span class="separator">|</span><span>📷</span></div>
       </div>
-      <input type="file" id="passportPhoto" accept="image/*" onchange="showFileName(this,'passportLabel','passportName')">
+      <input type="file" id="passportPhoto" accept="image/jpeg,image/png,image/gif,image/webp" onchange="showFileName(this,'passportLabel','passportName',['image/jpeg','image/png','image/gif','image/webp'],'passportBox')">
       <div class="file-name-display" id="passportName"></div>
     </div>
 
     <!-- EMPLOYEE SELFIE -->
     <div class="field">
       <label>Employee uploads his/her selfie with the Applicant : <span class="req">*</span></label>
-      <div class="file-upload-box" onclick="document.getElementById('selfiePhoto').click()">
+      <div class="file-upload-box" id="selfieBox" onclick="document.getElementById('selfiePhoto').click()">
         <span id="selfieLabel">Choose File</span>
         <div class="file-upload-icons"><span>⬆️</span><span class="separator">|</span><span>📷</span></div>
       </div>
-      <input type="file" id="selfiePhoto" accept="image/*" onchange="showFileName(this,'selfieLabel','selfieName')">
+      <input type="file" id="selfiePhoto" accept="image/jpeg,image/png,image/gif,image/webp" onchange="showFileName(this,'selfieLabel','selfieName',['image/jpeg','image/png','image/gif','image/webp'],'selfieBox')">
       <div class="file-name-display" id="selfieName"></div>
     </div>
 
     <!-- EDUCATIONAL CERTIFICATE & PHOTO ID -->
     <div class="field">
       <label>Upload Applicant's Educational Certificate &amp; Photo Id. <span class="req">*</span></label>
-      <div class="file-upload-box" onclick="document.getElementById('eduCert').click()">
+      <div class="file-upload-box" id="eduBox" onclick="document.getElementById('eduCert').click()">
         <span id="eduLabel">Choose File</span>
         <div class="file-upload-icons"><span>⬆️</span></div>
       </div>
-      <input type="file" id="eduCert" accept="image/*,.pdf" onchange="showFileName(this,'eduLabel','eduName')">
+      <input type="file" id="eduCert" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf" onchange="showFileName(this,'eduLabel','eduName',['image/jpeg','image/png','image/gif','image/webp','application/pdf'],'eduBox')">
       <div class="file-name-display" id="eduName"></div>
     </div>
 
@@ -423,11 +423,54 @@
   document.getElementById('dateTimeField').value =
     `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-  function showFileName(input, labelId, nameId) {
-    if (input.files && input.files[0]) {
-      document.getElementById(labelId).textContent = input.files[0].name;
-      document.getElementById(nameId).textContent = '✅ ' + input.files[0].name;
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg','image/png','image/gif','image/webp'];
+  const ALLOWED_DOC_TYPES   = [...ALLOWED_IMAGE_TYPES, 'application/pdf'];
+  const MAX_FILE_SIZE_MB    = 2;
+  const MAX_FILE_BYTES      = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+  function showFileError(nameId, boxId, msg) {
+    const nameEl = document.getElementById(nameId);
+    const boxEl  = document.getElementById(boxId);
+    nameEl.innerHTML = '<span style="color:#e53935;">⚠ ' + msg + '</span>';
+    if (boxEl) { boxEl.style.borderColor = '#e53935'; boxEl.style.background = '#fff5f5'; }
+  }
+
+  function clearFileError(nameId, boxId) {
+    const boxEl = document.getElementById(boxId);
+    if (boxEl) { boxEl.style.borderColor = ''; boxEl.style.background = ''; }
+  }
+
+  function validateFile(file, allowedTypes, nameId, boxId) {
+    if (!file) return false;
+    if (!allowedTypes.includes(file.type)) {
+      const allowed = allowedTypes.includes('application/pdf') ? 'JPG, PNG, PDF' : 'JPG, PNG';
+      showFileError(nameId, boxId, 'Invalid file type. Allowed: ' + allowed);
+      return false;
     }
+    if (file.size > MAX_FILE_BYTES) {
+      showFileError(nameId, boxId, 'File too large. Max size is ' + MAX_FILE_SIZE_MB + 'MB.');
+      return false;
+    }
+    if (file.size === 0) {
+      showFileError(nameId, boxId, 'File appears to be empty. Please choose another file.');
+      return false;
+    }
+    return true;
+  }
+
+  function showFileName(input, labelId, nameId, allowedTypes, boxId) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    clearFileError(nameId, boxId);
+    if (!validateFile(file, allowedTypes || ALLOWED_IMAGE_TYPES, nameId, boxId)) {
+      input.value = ''; // clear the input
+      document.getElementById(labelId).textContent = 'Choose File';
+      return;
+    }
+    document.getElementById(labelId).textContent = file.name;
+    const sizeMB = (file.size / (1024*1024)).toFixed(2);
+    document.getElementById(nameId).innerHTML =
+      '<span style="color:#16a34a;">✅ ' + file.name + ' (' + sizeMB + ' MB)</span>';
   }
 
   // Convert file to base64
@@ -441,25 +484,180 @@
     });
   }
 
+  // ── FIELD-LEVEL VALIDATION RULES ──────────────────────────
+  const validators = {
+    // Only letters, spaces, dots allowed — min 2 chars
+    name: {
+      regex: /^[a-zA-Zऀ-ॿ\s.'-]{2,}$/,
+      msg: 'Only letters allowed, minimum 2 characters.'
+    },
+    // Exactly 10 digits, starts with 6-9
+    mobile: {
+      regex: /^[6-9]\d{9}$/,
+      msg: 'Enter a valid 10-digit Indian mobile number.'
+    },
+    // Standard email
+    email: {
+      regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      msg: 'Enter a valid email address (e.g. name@gmail.com).'
+    },
+    // PIN code: exactly 6 digits
+    pincode: {
+      regex: /^\d{6}$/,
+      msg: 'Enter a valid 6-digit PIN code.'
+    },
+    // Date of birth: must be filled and person must be at least 15 years old
+    dob: {
+      custom: (val) => {
+        if (!val) return 'Date of birth is required.';
+        const dob = new Date(val);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        const actualAge = m < 0 || (m === 0 && today.getDate() < dob.getDate()) ? age - 1 : age;
+        if (actualAge < 15) return 'Applicant must be at least 15 years old.';
+        if (actualAge > 100) return 'Please enter a valid date of birth.';
+        return null;
+      }
+    },
+    // Text fields: no numbers or special characters
+    address: {
+      regex: /^.{3,}$/,
+      msg: 'Address must be at least 3 characters.'
+    },
+    // Generic: not empty, at least 2 chars
+    general: {
+      regex: /^.{2,}$/,
+      msg: 'This field must be at least 2 characters.'
+    }
+  };
+
+  function getValidator(fieldName) {
+    if (['applicantFirstName','applicantLastName','fatherFirstName','fatherLastName',
+         'motherFirstName','motherLastName','employeeFirstName','employeeLastName'].includes(fieldName))
+      return validators.name;
+    if (['mobile','whatsapp'].includes(fieldName)) return validators.mobile;
+    if (fieldName === 'email')    return validators.email;
+    if (fieldName === 'postalCode') return validators.pincode;
+    if (fieldName === 'dob')      return validators.dob;
+    if (fieldName === 'villagePost' || fieldName === 'blockTehsil' || fieldName === 'city' || fieldName === 'state')
+      return validators.address;
+    return null;
+  }
+
+  function showFieldError(el, msg) {
+    el.style.borderColor = '#e53935';
+    el.style.background  = '#fff5f5';
+    // Show inline error below field
+    let errEl = el.parentElement.querySelector('.field-error');
+    if (!errEl) {
+      // check one level up (for name-row children)
+      errEl = el.closest('.name-col') ? el.closest('.name-col').querySelector('.field-error') : null;
+    }
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.className = 'field-error';
+      errEl.style.cssText = 'color:#e53935;font-size:11.5px;margin-top:4px;padding-left:2px;';
+      el.parentElement.appendChild(errEl);
+    }
+    errEl.textContent = '⚠ ' + msg;
+  }
+
+  function clearFieldError(el) {
+    el.style.borderColor = '';
+    el.style.background  = '';
+    const errEl = el.parentElement.querySelector('.field-error');
+    if (errEl) errEl.textContent = '';
+  }
+
+  // Live validation on blur (when user leaves a field)
+  document.getElementById('memberForm').querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('blur', function() {
+      if (!this.value.trim() && !this.required) return;
+      const v = getValidator(this.name);
+      if (!v) return;
+      if (v.custom) {
+        const err = v.custom(this.value.trim());
+        if (err) showFieldError(this, err); else clearFieldError(this);
+      } else {
+        if (this.value.trim() && !v.regex.test(this.value.trim()))
+          showFieldError(this, v.msg);
+        else clearFieldError(this);
+      }
+    });
+    el.addEventListener('input', function() {
+      if (!this.style.borderColor || this.style.borderColor !== 'rgb(229, 57, 53)') return;
+      clearFieldError(this);
+    });
+  });
+
+  // ── INPUT MASKS: block letters in phone fields ──
+  document.querySelectorAll('input[name="mobile"], input[name="whatsapp"]').forEach(el => {
+    el.setAttribute('inputmode', 'numeric');
+    el.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  });
+  // PIN code: only digits
+  document.querySelector('input[name="postalCode"]').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+  });
+  // Name fields: block numbers and special chars
+  document.querySelectorAll('input[name="applicantFirstName"], input[name="applicantLastName"], input[name="fatherFirstName"], input[name="fatherLastName"], input[name="motherFirstName"], input[name="motherLastName"], input[name="employeeFirstName"], input[name="employeeLastName"]').forEach(el => {
+    el.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Zऀ-ॿ\s.'-]/g, '');
+    });
+  });
+
   document.getElementById('memberForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    // ── VALIDATION ──
+    // ── STEP 1: Required fields check ──
     const requiredFields = this.querySelectorAll('input[required], select[required]');
     let valid = true;
+    let firstError = null;
     requiredFields.forEach(el => {
       if (el.type === 'checkbox') {
-        if (!el.checked) { valid = false; el.style.outline = '2px solid #e53935'; }
-        else el.style.outline = '';
+        if (!el.checked) {
+          valid = false;
+          el.style.outline = '2px solid #e53935';
+          if (!firstError) firstError = el;
+        } else el.style.outline = '';
       } else {
-        if (!el.value.trim()) { valid = false; el.style.borderColor = '#e53935'; }
-        else el.style.borderColor = '';
+        if (!el.value.trim()) {
+          valid = false;
+          el.style.borderColor = '#e53935';
+          el.style.background  = '#fff5f5';
+          if (!firstError) firstError = el;
+        } else {
+          el.style.borderColor = '';
+          el.style.background  = '';
+        }
       }
     });
+
+    // ── STEP 2: Format validation on all filled fields ──
+    const allInputs = this.querySelectorAll('input[name], select[name]');
+    allInputs.forEach(el => {
+      if (!el.value.trim()) return;
+      const v = getValidator(el.name);
+      if (!v) return;
+      if (v.custom) {
+        const err = v.custom(el.value.trim());
+        if (err) { valid = false; showFieldError(el, err); if (!firstError) firstError = el; }
+      } else {
+        if (!v.regex.test(el.value.trim())) {
+          valid = false;
+          showFieldError(el, v.msg);
+          if (!firstError) firstError = el;
+        }
+      }
+    });
+
     if (!valid) {
       document.getElementById('errorBanner').style.display = 'block';
-      document.getElementById('errorBanner').textContent = '⚠️ Please fill all required fields marked with *.';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('errorBanner').textContent = '⚠️ Please fix the errors highlighted in red before submitting.';
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     document.getElementById('errorBanner').style.display = 'none';
@@ -474,10 +672,40 @@
       const data = {};
       fd.forEach((v, k) => { data[k] = v; });
 
-      // ── ENCODE FILES TO BASE64 ──
+      // ── FILE VALIDATION ──
       const passportFile = document.getElementById('passportPhoto').files[0];
       const selfieFile   = document.getElementById('selfiePhoto').files[0];
       const eduFile      = document.getElementById('eduCert').files[0];
+
+      let fileValid = true;
+      if (!passportFile) {
+        showFileError('passportName','passportBox','Passport size photo is required.');
+        fileValid = false;
+      } else if (!validateFile(passportFile, ALLOWED_IMAGE_TYPES, 'passportName', 'passportBox')) {
+        fileValid = false;
+      }
+      if (!selfieFile) {
+        showFileError('selfieName','selfieBox','Employee selfie with applicant is required.');
+        fileValid = false;
+      } else if (!validateFile(selfieFile, ALLOWED_IMAGE_TYPES, 'selfieName', 'selfieBox')) {
+        fileValid = false;
+      }
+      if (!eduFile) {
+        showFileError('eduName','eduBox','Educational certificate & Photo ID is required.');
+        fileValid = false;
+      } else if (!validateFile(eduFile, ALLOWED_DOC_TYPES, 'eduName', 'eduBox')) {
+        fileValid = false;
+      }
+      if (!fileValid) {
+        document.getElementById('errorBanner').style.display = 'block';
+        document.getElementById('errorBanner').textContent = '⚠️ Please fix the file upload errors highlighted in red.';
+        document.getElementById('passportBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('loaderOverlay').classList.remove('active');
+        document.getElementById('submitBtn').disabled = false;
+        return;
+      }
+
+      // ── ENCODE FILES TO BASE64 ──
 
       data.passportPhoto    = passportFile  ? await fileToBase64(passportFile)  : '';
       data.passportPhotoName= passportFile  ? passportFile.name  : '';
