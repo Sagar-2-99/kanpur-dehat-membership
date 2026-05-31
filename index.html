@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSS-Foundation Kanpur Dehat Membership Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Poppins', sans-serif; background: #e8f4f8; min-height: 100vh; padding-bottom: 40px; }
+  .header-banner { background: #4a9aaa; color: #fff; text-align: center; padding: 36px 24px 32px; }
+  .header-banner h1 { font-size: 26px; font-weight: 700; line-height: 1.3; letter-spacing: 0.5px; }
+  .header-banner p { font-size: 14px; margin-top: 10px; font-style: italic; opacity: 0.95; line-height: 1.5; }
+  .form-card { background: #fff; max-width: 680px; margin: 0 auto; padding: 28px 24px 32px; }
+  .field { margin-bottom: 22px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; color: #3a8fa0; margin-bottom: 7px; }
+  .field label .req { color: #e53935; margin-left: 3px; }
+  .field input[type="text"], .field input[type="email"], .field input[type="tel"],
+  .field input[type="date"], .field input[type="datetime-local"], .field select, .field textarea {
+    width: 100%; border: 1.5px solid #b2d8e0; border-radius: 6px; padding: 11px 14px;
+    font-size: 14px; font-family: 'Poppins', sans-serif; color: #333; background: #f0f9fb;
+    outline: none; transition: border-color 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #4a9aaa; background: #fff; }
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a9aaa' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer;
+  }
+  .sub-label { font-size: 12px; color: #3a8fa0; margin-top: 4px; margin-bottom: 6px; padding-left: 2px; }
+  .name-input-wrap { position: relative; }
+  .name-input-wrap .person-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aac8d0; font-size: 16px; pointer-events: none; }
+  .name-input-wrap input { padding-left: 36px !important; }
+  .phone-input-wrap { position: relative; }
+  .phone-input-wrap .phone-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aac8d0; font-size: 15px; pointer-events: none; }
+  .phone-input-wrap input { padding-left: 36px !important; }
+  .email-input-wrap { position: relative; }
+  .email-input-wrap .email-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aac8d0; font-size: 15px; pointer-events: none; }
+  .email-input-wrap input { padding-left: 36px !important; }
+  .cal-input-wrap { position: relative; }
+  .cal-input-wrap .cal-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #aac8d0; font-size: 15px; pointer-events: none; }
+  .cal-input-wrap input { padding-left: 36px !important; }
+  .divider { border: none; border-top: 1.5px solid #d0e8ed; margin: 10px 0 22px; }
+  .file-upload-box { border: 1.5px dashed #7ec8d5; border-radius: 6px; background: #f0f9fb; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .file-upload-box span { color: #888; font-size: 14px; }
+  .file-upload-icons { display: flex; align-items: center; gap: 10px; color: #4a9aaa; font-size: 18px; }
+  .file-upload-icons .separator { color: #ccc; font-size: 20px; }
+  input[type="file"] { display: none; }
+  .file-name-display { font-size: 12px; color: #4a9aaa; margin-top: 4px; padding-left: 2px; min-height: 16px; }
+  .terms-box { border: 1.5px solid #b2d8e0; border-radius: 6px; padding: 16px; background: #f7fdfe; font-size: 13px; color: #333; max-height: 220px; overflow-y: auto; line-height: 1.7; margin-bottom: 14px; }
+  .terms-box .terms-title { font-weight: 600; color: #3a8fa0; margin-bottom: 10px; font-size: 14px; }
+  .terms-box ol { padding-left: 18px; }
+  .terms-box ol li { margin-bottom: 6px; }
+  .checkbox-row { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4a9aaa; flex-shrink: 0; cursor: pointer; }
+  .checkbox-row label { font-size: 14px; color: #333; cursor: pointer; font-weight: 400; }
+  .country-tag { display: inline-flex; align-items: center; gap: 8px; background: #f0f9fb; border: 1.5px solid #b2d8e0; border-radius: 6px; padding: 10px 14px; font-size: 14px; color: #333; width: 100%; }
+  .country-tag .x-btn { margin-left: auto; color: #4a9aaa; font-size: 16px; cursor: pointer; line-height: 1; }
+  .submit-btn { width: 100%; background: linear-gradient(135deg, #f5a623 0%, #e8920f 100%); color: #fff; border: none; border-radius: 30px; padding: 16px; font-size: 17px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(245,166,35,0.4); transition: transform 0.15s, box-shadow 0.15s; margin-top: 8px; }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(245,166,35,0.5); }
+  .submit-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
+
+  /* LOADER OVERLAY */
+  #loaderOverlay {
+    display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.85);
+    z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  }
+  #loaderOverlay.active { display: flex; }
+  .spinner {
+    width: 48px; height: 48px; border: 5px solid #b2d8e0;
+    border-top-color: #4a9aaa; border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loaderOverlay p { font-size: 15px; color: #3a8fa0; font-weight: 500; }
+
+  /* SUCCESS */
+  #successMsg { display: none; text-align: center; padding: 60px 24px; background: #fff; max-width: 680px; margin: 0 auto; }
+  #successMsg .check { font-size: 56px; }
+  #successMsg h3 { color: #4a9aaa; font-size: 22px; margin: 16px 0 10px; }
+  #successMsg p { color: #666; font-size: 14px; line-height: 1.7; }
+
+  /* ERROR BANNER */
+  #errorBanner {
+    display: none; background: #fef2f2; border: 1.5px solid #fca5a5;
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;
+    color: #dc2626; font-size: 13.5px; text-align: center;
+  }
+
+  .extra-input {
+    width: 100%; border: 1.5px solid #b2d8e0; border-radius: 6px;
+    padding: 11px 14px; font-size: 14px; font-family: 'Poppins', sans-serif;
+    color: #333; background: #f0f9fb; outline: none; margin-top: 8px;
+    transition: border-color 0.2s;
+  }
+  .extra-input:focus { border-color: #4a9aaa; background: #fff; }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loaderOverlay">
+  <div class="spinner"></div>
+  <p>Submitting your form, please wait...</p>
+</div>
+
+<!-- HEADER -->
+<div class="header-banner">
+  <h1>SSS- FOUNDATION<br>KANPUR DEHAT<br>MEMBERSHIP FORM</h1>
+  <p>"Empowering Rural India Through<br>Skill Development &amp; Self Employment Awareness"</p>
+</div>
+
+<!-- FORM -->
+<div class="form-card" id="formCard">
+
+  <div id="errorBanner"></div>
+
+  <form id="memberForm" novalidate>
+
+    <!-- DISTRICT NAME -->
+    <div class="field">
+      <label>DISTRICT NAME? <span class="req">*</span></label>
+      <input type="text" name="districtName" required>
+    </div>
+
+    <hr class="divider">
+
+    <!-- MEMBERSHIP DETAILS -->
+    <div class="field">
+      <label>Membership Details : <span class="req">*</span></label>
+      <select name="membershipDetails" required>
+        <option value="">-Select-</option>
+        <option>Primary Membership</option>
+        <option>Active Membership</option>
+        <option>Life Membership</option>
+        <option>Patron Membership</option>
+      </select>
+    </div>
+
+    <!-- APPLICANT FULL NAME -->
+    <div class="field">
+      <label>Aplicant Full Name- <span class="req">*</span></label>
+      <div class="name-input-wrap">
+        <span class="person-icon">👤</span>
+        <input type="text" name="applicantFirstName" required>
+      </div>
+      <div class="sub-label">First Name</div>
+      <input type="text" name="applicantLastName" class="extra-input">
+      <div class="sub-label">Last Name</div>
+    </div>
+
+    <!-- FATHER / HUSBAND NAME -->
+    <div class="field">
+      <label>Father's / Husband's Name: <span class="req">*</span></label>
+      <div class="name-input-wrap">
+        <span class="person-icon">👤</span>
+        <input type="text" name="fatherFirstName" required>
+      </div>
+      <div class="sub-label">First Name</div>
+      <input type="text" name="fatherLastName" class="extra-input">
+      <div class="sub-label">Last Name</div>
+    </div>
+
+    <!-- MOTHER NAME -->
+    <div class="field">
+      <label>Mother Name ; <span class="req">*</span></label>
+      <div class="name-input-wrap">
+        <span class="person-icon">👤</span>
+        <input type="text" name="motherFirstName" required>
+      </div>
+      <div class="sub-label">First Name</div>
+      <input type="text" name="motherLastName" class="extra-input">
+      <div class="sub-label">Last Name</div>
+    </div>
+
+    <!-- MOBILE -->
+    <div class="field">
+      <label>Mobile Number <span class="req">*</span></label>
+      <div class="phone-input-wrap">
+        <span class="phone-icon">📱</span>
+        <input type="tel" name="mobile" maxlength="10" required>
+      </div>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div class="field">
+      <label>Whatsapp Number <span class="req">*</span></label>
+      <div class="phone-input-wrap">
+        <span class="phone-icon">📱</span>
+        <input type="tel" name="whatsapp" maxlength="10" required>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="field">
+      <label>Email ; <span class="req">*</span></label>
+      <div class="email-input-wrap">
+        <span class="email-icon">✉️</span>
+        <input type="email" name="email" required>
+      </div>
+    </div>
+
+    <!-- DATE OF BIRTH -->
+    <div class="field">
+      <label>Date of birth? <span class="req">*</span></label>
+      <div class="cal-input-wrap">
+        <span class="cal-icon">📅</span>
+        <input type="date" name="dob" required>
+      </div>
+      <div class="sub-label">dd-MMM-yyyy</div>
+    </div>
+
+    <!-- GENDER -->
+    <div class="field">
+      <label>Gender <span class="req">*</span></label>
+      <select name="gender" required>
+        <option value="">-Select-</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <!-- FULL ADDRESS -->
+    <div class="field">
+      <label>Full Address : <span class="req">*</span></label>
+      <input type="text" name="villagePost" required>
+      <div class="sub-label">Village &amp; Post</div>
+      <input type="text" name="blockTehsil" class="extra-input">
+      <div class="sub-label">Block &amp; Tehsil</div>
+      <input type="text" name="city" class="extra-input">
+      <div class="sub-label">City</div>
+      <input type="text" name="state" class="extra-input">
+      <div class="sub-label">State</div>
+      <input type="text" name="postalCode" maxlength="6" class="extra-input">
+      <div class="sub-label">Postal Code</div>
+      <div class="country-tag" style="margin-top:8px;">India <span class="x-btn">✕</span></div>
+      <div class="sub-label">India</div>
+    </div>
+
+    <!-- DATE & TIME -->
+    <div class="field">
+      <label>Date &amp; Time <span class="req">*</span></label>
+      <div class="cal-input-wrap">
+        <span class="cal-icon">📅</span>
+        <input type="datetime-local" name="dateTime" id="dateTimeField" required>
+      </div>
+      <div class="sub-label">dd-MMM-yyyy HH:MM AM/PM</div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- EDUCATIONAL QUALIFICATION -->
+    <div class="field">
+      <label>Educational Qualification? <span class="req">*</span></label>
+      <select name="education" required>
+        <option value=""></option>
+        <option>Below 8th</option>
+        <option>8th Pass</option>
+        <option>10th Pass</option>
+        <option>12th Pass</option>
+        <option>Graduate</option>
+        <option>Post Graduate</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <!-- AREA OF INTEREST -->
+    <div class="field">
+      <label>Area of Interest: <span class="req">*</span></label>
+      <select name="areaOfInterest" required>
+        <option value=""></option>
+        <option>Education</option>
+        <option>Health &amp; Wellness</option>
+        <option>Women Empowerment</option>
+        <option>Environment</option>
+        <option>Youth Development</option>
+        <option>Agriculture &amp; Farming</option>
+        <option>Self Employment</option>
+        <option>Social Welfare</option>
+      </select>
+    </div>
+
+    <!-- TERMS AND CONDITIONS -->
+    <div class="field">
+      <label>Terms and Conditions:- <span class="req">*</span></label>
+      <div class="terms-box">
+        <div class="terms-title">6. Terms &amp; Conditions :-</div>
+        <ol>
+          <li>Membership is subject to approval by SSS FOUNDATION (Shweta Shiksha Samiti) management.</li>
+          <li>The applicant must provide correct and valid information in the application form.</li>
+          <li>Submission of false information or documents may result in cancellation of membership.</li>
+          <li>Members are expected to maintain discipline and follow the objectives, rules, and guidelines of the organization.</li>
+          <li>The organization reserves the right to suspend or terminate membership in case of misconduct or violation of organizational policies.</li>
+          <li>Membership fees, once paid, are non-refundable.</li>
+          <li>Members must not misuse the name, identity card, or documents of SSS FOUNDATION for any personal or illegal activity.</li>
+          <li>Any activity performed on behalf of the organization must be authorized by the organization.</li>
+          <li>Members involved in awareness campaigns, training programs, or field activities must maintain proper behavior with the public.</li>
+          <li>The organization may update its policies, membership structure, or operational guidelines from time to time.</li>
+          <li>SSS FOUNDATION will not be responsible for any personal financial dealings made by members without official written authorization.</li>
+          <li>By signing this form, the applicant agrees to all terms and conditions of the organization.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="termsCheck" name="termsAccepted" required>
+      <label for="termsCheck">I accept the Terms and Conditions.</label>
+    </div>
+
+    <!-- UPLOAD PASSPORT SIZE PHOTO -->
+    <div class="field">
+      <label>Upload Passport Size Photo <span class="req">*</span></label>
+      <div class="file-upload-box" onclick="document.getElementById('passportPhoto').click()">
+        <span id="passportLabel">Choose File</span>
+        <div class="file-upload-icons"><span>⬆️</span><span class="separator">|</span><span>📷</span></div>
+      </div>
+      <input type="file" id="passportPhoto" accept="image/*" onchange="showFileName(this,'passportLabel','passportName')">
+      <div class="file-name-display" id="passportName"></div>
+    </div>
+
+    <!-- EMPLOYEE SELFIE -->
+    <div class="field">
+      <label>Employee uploads his/her selfie with the Applicant : <span class="req">*</span></label>
+      <div class="file-upload-box" onclick="document.getElementById('selfiePhoto').click()">
+        <span id="selfieLabel">Choose File</span>
+        <div class="file-upload-icons"><span>⬆️</span><span class="separator">|</span><span>📷</span></div>
+      </div>
+      <input type="file" id="selfiePhoto" accept="image/*" onchange="showFileName(this,'selfieLabel','selfieName')">
+      <div class="file-name-display" id="selfieName"></div>
+    </div>
+
+    <!-- EDUCATIONAL CERTIFICATE & PHOTO ID -->
+    <div class="field">
+      <label>Upload Applicant's Educational Certificate &amp; Photo Id. <span class="req">*</span></label>
+      <div class="file-upload-box" onclick="document.getElementById('eduCert').click()">
+        <span id="eduLabel">Choose File</span>
+        <div class="file-upload-icons"><span>⬆️</span></div>
+      </div>
+      <input type="file" id="eduCert" accept="image/*,.pdf" onchange="showFileName(this,'eduLabel','eduName')">
+      <div class="file-name-display" id="eduName"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- EMPLOYEE NAME -->
+    <div class="field">
+      <label>Employee Name? <span class="req">*</span></label>
+      <div class="name-input-wrap">
+        <span class="person-icon">👤</span>
+        <input type="text" name="employeeFirstName" required>
+      </div>
+      <div class="sub-label">First Name</div>
+      <input type="text" name="employeeLastName" class="extra-input">
+      <div class="sub-label">Last Name</div>
+    </div>
+
+    <!-- EMPLOYEE POSITION & JOB ID -->
+    <div class="field">
+      <label>Employee Position &amp; Job I'D No.? <span class="req">*</span></label>
+      <input type="text" name="employeePosition" required class="extra-input" style="margin-top:0;">
+    </div>
+
+    <!-- SUBMIT -->
+    <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+
+  </form>
+</div>
+
+<!-- SUCCESS -->
+<div id="successMsg">
+  <div class="check">✅</div>
+  <h3>Form Submitted Successfully!</h3>
+  <p>Thank you! Your membership application has been submitted.<br>
+  Your data has been saved to Google Drive.<br><br>
+  SSS Foundation will contact you soon.</p>
+</div>
+
+<script>
+  // ── REPLACE THIS WITH YOUR DEPLOYED APPS SCRIPT WEB APP URL ──
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+  // Auto-fill current date & time
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('dateTimeField').value =
+    `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  function showFileName(input, labelId, nameId) {
+    if (input.files && input.files[0]) {
+      document.getElementById(labelId).textContent = input.files[0].name;
+      document.getElementById(nameId).textContent = '✅ ' + input.files[0].name;
+    }
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) { resolve(null); return; }
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('memberForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // ── VALIDATION ──
+    const requiredFields = this.querySelectorAll('input[required], select[required]');
+    let valid = true;
+    requiredFields.forEach(el => {
+      if (el.type === 'checkbox') {
+        if (!el.checked) { valid = false; el.style.outline = '2px solid #e53935'; }
+        else el.style.outline = '';
+      } else {
+        if (!el.value.trim()) { valid = false; el.style.borderColor = '#e53935'; }
+        else el.style.borderColor = '';
+      }
+    });
+    if (!valid) {
+      document.getElementById('errorBanner').style.display = 'block';
+      document.getElementById('errorBanner').textContent = '⚠️ Please fill all required fields marked with *.';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    document.getElementById('errorBanner').style.display = 'none';
+
+    // ── SHOW LOADER ──
+    document.getElementById('loaderOverlay').classList.add('active');
+    document.getElementById('submitBtn').disabled = true;
+
+    try {
+      // ── COLLECT FORM DATA ──
+      const fd = new FormData(this);
+      const data = {};
+      fd.forEach((v, k) => { data[k] = v; });
+
+      // ── ENCODE FILES TO BASE64 ──
+      const passportFile = document.getElementById('passportPhoto').files[0];
+      const selfieFile   = document.getElementById('selfiePhoto').files[0];
+      const eduFile      = document.getElementById('eduCert').files[0];
+
+      data.passportPhoto    = passportFile  ? await fileToBase64(passportFile)  : '';
+      data.passportPhotoName= passportFile  ? passportFile.name  : '';
+      data.selfiePhoto      = selfieFile    ? await fileToBase64(selfieFile)    : '';
+      data.selfiePhotoName  = selfieFile    ? selfieFile.name    : '';
+      data.eduCert          = eduFile       ? await fileToBase64(eduFile)       : '';
+      data.eduCertName      = eduFile       ? eduFile.name       : '';
+
+      // ── SEND TO APPS SCRIPT ──
+      // Apps Script requires no-cors from external origins (GitHub Pages).
+      // We cannot read the response in no-cors mode, so success = no network error.
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+
+      // Fetch didn't throw = request was sent successfully
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      document.getElementById('errorBanner').style.display = 'block';
+      document.getElementById('errorBanner').textContent =
+        '❌ Submission failed: ' + err.message + '. Please try again or contact support.';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('submitBtn').disabled = false;
+    } finally {
+      document.getElementById('loaderOverlay').classList.remove('active');
+    }
+  });
+</script>
+</body>
+</html>
