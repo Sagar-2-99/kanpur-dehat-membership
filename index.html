@@ -93,6 +93,34 @@
     transition: border-color 0.2s;
   }
   .extra-input:focus { border-color: #4a9aaa; background: #fff; }
+
+  /* ── RESPONSIVE NAME ROW ── */
+  .name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .name-row .name-col { display: flex; flex-direction: column; gap: 4px; }
+  .name-row .name-col input {
+    width: 100%; border: 1.5px solid #b2d8e0; border-radius: 6px;
+    padding: 11px 14px; font-size: 14px; font-family: 'Poppins', sans-serif;
+    color: #333; background: #f0f9fb; outline: none; transition: border-color 0.2s;
+  }
+  .name-row .name-col input:focus { border-color: #4a9aaa; background: #fff; }
+  .name-row .name-col .sub-label { margin-top: 3px; margin-bottom: 0; }
+  /* First name col gets person icon */
+  .name-row .name-col.first-col { position: relative; }
+  .name-row .name-col.first-col .person-icon {
+    position: absolute; left: 12px; top: 11px;
+    color: #aac8d0; font-size: 16px; pointer-events: none;
+  }
+  .name-row .name-col.first-col input { padding-left: 36px; }
+
+  /* Mobile: stack vertically */
+  @media (max-width: 540px) {
+    .name-row { grid-template-columns: 1fr; gap: 8px; }
+  }
 </style>
 </head>
 <body>
@@ -129,47 +157,59 @@
       <label>Membership Details : <span class="req">*</span></label>
       <select name="membershipDetails" required>
         <option value="">-Select-</option>
-        <option>Primary Membership</option>
-        <option>Active Membership</option>
-        <option>Life Membership</option>
-        <option>Patron Membership</option>
+        <option>General Member (Free) ( Only for Training Camp )</option>
+        <option>Active Member Rs. 500/ Yearly.</option>
+        <option>Lifetime Member Rs. 5100/-.</option>
+        <option>Employment (Rojgar Mitra) Rs-500/</option>
       </select>
     </div>
 
     <!-- APPLICANT FULL NAME -->
     <div class="field">
       <label>Aplicant Full Name- <span class="req">*</span></label>
-      <div class="name-input-wrap">
-        <span class="person-icon">👤</span>
-        <input type="text" name="applicantFirstName" required>
+      <div class="name-row">
+        <div class="name-col first-col">
+          <span class="person-icon">👤</span>
+          <input type="text" name="applicantFirstName" required>
+          <div class="sub-label">First Name</div>
+        </div>
+        <div class="name-col">
+          <input type="text" name="applicantLastName">
+          <div class="sub-label">Last Name</div>
+        </div>
       </div>
-      <div class="sub-label">First Name</div>
-      <input type="text" name="applicantLastName" class="extra-input">
-      <div class="sub-label">Last Name</div>
     </div>
 
     <!-- FATHER / HUSBAND NAME -->
     <div class="field">
       <label>Father's / Husband's Name: <span class="req">*</span></label>
-      <div class="name-input-wrap">
-        <span class="person-icon">👤</span>
-        <input type="text" name="fatherFirstName" required>
+      <div class="name-row">
+        <div class="name-col first-col">
+          <span class="person-icon">👤</span>
+          <input type="text" name="fatherFirstName" required>
+          <div class="sub-label">First Name</div>
+        </div>
+        <div class="name-col">
+          <input type="text" name="fatherLastName">
+          <div class="sub-label">Last Name</div>
+        </div>
       </div>
-      <div class="sub-label">First Name</div>
-      <input type="text" name="fatherLastName" class="extra-input">
-      <div class="sub-label">Last Name</div>
     </div>
 
     <!-- MOTHER NAME -->
     <div class="field">
       <label>Mother Name ; <span class="req">*</span></label>
-      <div class="name-input-wrap">
-        <span class="person-icon">👤</span>
-        <input type="text" name="motherFirstName" required>
+      <div class="name-row">
+        <div class="name-col first-col">
+          <span class="person-icon">👤</span>
+          <input type="text" name="motherFirstName" required>
+          <div class="sub-label">First Name</div>
+        </div>
+        <div class="name-col">
+          <input type="text" name="motherLastName">
+          <div class="sub-label">Last Name</div>
+        </div>
       </div>
-      <div class="sub-label">First Name</div>
-      <input type="text" name="motherLastName" class="extra-input">
-      <div class="sub-label">Last Name</div>
     </div>
 
     <!-- MOBILE -->
@@ -254,13 +294,10 @@
       <label>Educational Qualification? <span class="req">*</span></label>
       <select name="education" required>
         <option value=""></option>
-        <option>Below 8th</option>
-        <option>8th Pass</option>
-        <option>10th Pass</option>
-        <option>12th Pass</option>
+        <option>High School</option>
+        <option>Intermediate</option>
         <option>Graduate</option>
         <option>Post Graduate</option>
-        <option>Other</option>
       </select>
     </div>
 
@@ -269,14 +306,11 @@
       <label>Area of Interest: <span class="req">*</span></label>
       <select name="areaOfInterest" required>
         <option value=""></option>
-        <option>Education</option>
-        <option>Health &amp; Wellness</option>
+        <option>Skill Development Traning.</option>
+        <option>Self-Employment Awareness.</option>
         <option>Women Empowerment</option>
-        <option>Environment</option>
-        <option>Youth Development</option>
-        <option>Agriculture &amp; Farming</option>
-        <option>Self Employment</option>
-        <option>Social Welfare</option>
+        <option>Dairy &amp; Animal Husbandry</option>
+        <option>Agriculture Awareness</option>
       </select>
     </div>
 
@@ -345,13 +379,17 @@
     <!-- EMPLOYEE NAME -->
     <div class="field">
       <label>Employee Name? <span class="req">*</span></label>
-      <div class="name-input-wrap">
-        <span class="person-icon">👤</span>
-        <input type="text" name="employeeFirstName" required>
+      <div class="name-row">
+        <div class="name-col first-col">
+          <span class="person-icon">👤</span>
+          <input type="text" name="employeeFirstName" required>
+          <div class="sub-label">First Name</div>
+        </div>
+        <div class="name-col">
+          <input type="text" name="employeeLastName">
+          <div class="sub-label">Last Name</div>
+        </div>
       </div>
-      <div class="sub-label">First Name</div>
-      <input type="text" name="employeeLastName" class="extra-input">
-      <div class="sub-label">Last Name</div>
     </div>
 
     <!-- EMPLOYEE POSITION & JOB ID -->
@@ -377,7 +415,7 @@
 
 <script>
   // ── REPLACE THIS WITH YOUR DEPLOYED APPS SCRIPT WEB APP URL ──
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwIur-REMcgXDwU41CJ4-H4cD7SuJ270PnxbxqhmaxOxcEY0UyuLBbGPqIhpMOBNN7JcA/exec';
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
   // Auto-fill current date & time
   const now = new Date();
